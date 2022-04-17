@@ -10,19 +10,16 @@ set(SOURCES
     layers/linear.cpp
     layers/softmax.cpp
     layers/sigmoid.cpp
-    multiplicators/slowmultiplicator.cpp
-)
+    matrix/matrix.cpp)
 
 set(HEADERS
     constants.h
     layers/layer.h
-    multiplicators/MatrixMultiplicator.h
+    matrix/Matrix.h
 
     layers/linear.h
     layers/softmax.h
-    layers/sigmoid.h
-    multiplicators/slowmultiplicator.h
-)
+    layers/sigmoid.h)
 
 add_executable(
     MLP
