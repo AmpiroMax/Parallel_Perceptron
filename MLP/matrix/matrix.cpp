@@ -54,6 +54,15 @@ const Matrix operator* (const Matrix& matrix, double num)
 }
 
 
+const Matrix operator* (const Matrix& lhs, const Matrix& rhs)
+{
+    if (lhs.n_jobs == 1 && lhs.type == AlgorithmType::Slow)
+        return lhs.__dotSlow(rhs);
+
+    return lhs * 0;
+}
+
+
 const Matrix operator+ (double num, const Matrix& matrix)
 {
     Matrix added(matrix);
@@ -113,4 +122,34 @@ Matrix Matrix::T() const
             transposed.mat[j][i] = mat[i][j];
 
     return transposed;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+// Блок приватных методов
+//----------------------------------------------------------------------------------------------------------------------
+
+const Matrix Matrix::__dotSlow(const Matrix &rhs) const
+{
+
+    bool shape_cond = shape().second != rhs.shape().first;          // размерности матриц не дают их перемножить
+    bool dot_cond = shape().first == 1 && rhs.shape().second == 1;  // матрицы - не векторы
+    bool jobs_cond = n_jobs != rhs.n_jobs;                          // разные уровни распараллеливания
+    bool type_cond = type != rhs.type;                              // разные способы умножения
+
+    // ничего не делаем, если матрицы несовместимы
+    if ((shape_cond || jobs_cond || type_cond) && !dot_cond)
+    // возможно, стоит переработать этот момент
+    {
+        std::cout << "Impossible to multiply matrices" << "\n";
+        return rhs;
+    }
+
+    Matrix product(shape().first, rhs.shape().second, n_jobs, type);
+
+    for (size_t i = 0; i < product.shape().first; ++i)
+        for (size_t j = 0; j < product.shape().second; ++j)
+            for (size_t k = 0; k < shape().second; ++k)
+                product.mat[i][j] += mat[i][k] * rhs.mat[k][j];
+
+    return product;
 }
