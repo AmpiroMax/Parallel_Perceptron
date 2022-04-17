@@ -17,6 +17,8 @@ private:
     size_t n_jobs;
     AlgorithmType type;
 
+    const Matrix __dotSlow(const Matrix& rhs) const;
+
 public:
 
     explicit Matrix(size_t n, size_t m, double fill, size_t n_jobs, AlgorithmType type);
@@ -26,6 +28,7 @@ public:
     friend std::ostream& operator<< (std::ostream& os, const Matrix& matrix);
     friend const Matrix operator* (double num, const Matrix& matrix);
     friend const Matrix operator* (const Matrix& matrix, double num);
+    friend const Matrix operator* (const Matrix& lhs, const Matrix& rhs);
     friend const Matrix operator+ (double num, const Matrix& matrix);
     friend const Matrix operator+ (const Matrix& matrix, double num);
     friend const Matrix operator- (double num, const Matrix& matrix);
