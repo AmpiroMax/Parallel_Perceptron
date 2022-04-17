@@ -137,7 +137,7 @@ const Matrix Matrix::__dotSlow(const Matrix &rhs) const
     bool type_cond = type != rhs.type;                              // разные способы умножения
 
     // ничего не делаем, если матрицы несовместимы
-    if ((shape_cond || jobs_cond || type_cond) && !dot_cond)
+    if ((shape_cond && !dot_cond) || jobs_cond || type_cond)
     // возможно, стоит переработать этот момент
     {
         std::cout << "Impossible to multiply matrices" << "\n";
