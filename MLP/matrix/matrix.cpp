@@ -141,7 +141,7 @@ const Matrix Matrix::__dotSlow(const Matrix &rhs) const
     // возможно, стоит переработать этот момент
     {
         std::cout << "Impossible to multiply matrices" << "\n";
-        return rhs;
+        return rhs * 0;
     }
 
     Matrix product(shape().first, rhs.shape().second, n_jobs, type);

@@ -11,5 +11,5 @@ int main()
 
     Matrix vector(vect, 1, AlgorithmType::Slow);
 
-    std::cout << vector.T() * vector << "\n";
+    std::cout <<  vector * vector.T() << "\n";
 }
