@@ -1,11 +1,18 @@
 #ifndef SOFTMAX_H
 #define SOFTMAX_H
 
+#include "layer.h"
 
-class SoftMax
+class SoftMax : public Layer
 {
-public:
+  private:
+    matrix X;
+
+  public:
     SoftMax();
+
+    matrix forward(const matrix &_X) override;
+    matrix backward(const matrix &grads) override;
 };
 
 #endif // SOFTMAX_H

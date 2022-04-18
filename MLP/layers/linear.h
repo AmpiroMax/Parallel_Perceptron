@@ -7,11 +7,11 @@ class Linear : public Layer
 {
   private:
     matrix W;
+    matrix X;
     matrix bias;
-    MatrixMultiplicator *mm;
 
   public:
-    Linear(size_t in, size_t out, bool bias, MatrixMultiplicator *_mm);
+    Linear(size_t in, size_t out, bool bias);
     matrix forward(const matrix &X) override;
     matrix backward(const matrix &grads) override;
 };
