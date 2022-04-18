@@ -21,9 +21,12 @@ private:
 
 public:
 
+    Matrix();
     explicit Matrix(size_t n, size_t m, double fill, size_t n_jobs, AlgorithmType type);
-    explicit Matrix(size_t n, size_t m, size_t n_jobs, AlgorithmType type);
-    explicit Matrix(std::vector<std::vector<double>>& table, size_t n_jobs, AlgorithmType type);
+    explicit Matrix(size_t n, size_t m);
+    explicit Matrix(std::pair<size_t, size_t> shape,  double fill, size_t n_jobs, AlgorithmType type);
+    explicit Matrix(std::pair<size_t, size_t> shape);
+    explicit Matrix(const std::vector<std::vector<double>>& table, size_t n_jobs, AlgorithmType type);
 
     friend std::ostream& operator<< (std::ostream& os, const Matrix& matrix);
     friend const Matrix operator* (double num, const Matrix& matrix);
@@ -31,8 +34,10 @@ public:
     friend const Matrix operator* (const Matrix& lhs, const Matrix& rhs);
     friend const Matrix operator+ (double num, const Matrix& matrix);
     friend const Matrix operator+ (const Matrix& matrix, double num);
+    friend const Matrix operator+ (const Matrix& lhs, const Matrix& rhs);
     friend const Matrix operator- (double num, const Matrix& matrix);
     friend const Matrix operator- (const Matrix& matrix, double num);
+    friend const Matrix operator- (const Matrix& lhs, const Matrix& rhs);
 
     std::pair<size_t, size_t> shape() const;
     Matrix T() const;
