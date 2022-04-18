@@ -1,20 +1,21 @@
 #include "linear.h"
 
-Linear::Linear(size_t in, size_t out, bool _bias)
+Linear::Linear(size_t in, size_t out, bool _bias, AlgorithmType algType)
+    : W(in, out, 0, 1, algType), bias(0, 0, 0, 1, algType), X(0, 0, 0, 1, algType)
 {
-    W = matrix(in, std::vector<double>(out, 0));
+    type = algType;
     if (_bias)
-        bias = matrix(out, std::vector<double>(1, 0));
+        bias = Matrix(out, 1, 0, 1, type);
 }
-matrix Linear::forward(const matrix &_X)
+Matrix Linear::forward(const Matrix &_X)
 {
-    X = _X; // Потенциально долго, возможно стоит хранить указатели на вход
-    if (bias.size() != 0)    //
-        return W * X + bias; // Необходимо определить сложение
+    X = _X;
+    if (bias.shape().first != 0)
+        return W * X + bias;
     else
         return W * X;
 }
-matrix Linear::backward(const matrix &grads)
+Matrix Linear::backward(const Matrix &grads)
 {
-    return X.T() * grads; // Необходимо определить транспонирование
+    return X.T() * grads;
 }

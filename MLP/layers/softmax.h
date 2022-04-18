@@ -6,13 +6,14 @@
 class SoftMax : public Layer
 {
   private:
-    matrix X;
+    Matrix Ans;
+    AlgorithmType type;
 
   public:
-    SoftMax();
+    SoftMax(AlgorithmType algType = AlgorithmType::Slow);
 
-    matrix forward(const matrix &_X) override;
-    matrix backward(const matrix &grads) override;
+    Matrix forward(const Matrix &_X) override;
+    Matrix backward(const Matrix &grads) override;
 };
 
 #endif // SOFTMAX_H

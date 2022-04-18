@@ -2,6 +2,7 @@
 #define LAYER_H
 
 #include "../constants.h"
+#include "../matrix/Matrix.h"
 
 class Layer
 {
