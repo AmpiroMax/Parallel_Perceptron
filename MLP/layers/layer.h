@@ -6,8 +6,8 @@
 class Layer
 {
   public:
-    virtual matrix forward(const matrix &X) = 0;
-    virtual matrix backward(const matrix &grads) = 0;
+    virtual Matrix forward(const Matrix &X) = 0;
+    virtual Matrix backward(const Matrix &grads) = 0;
     virtual ~Layer();
 };
 
