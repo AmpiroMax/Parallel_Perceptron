@@ -10,7 +10,10 @@ set(SOURCES
     layers/linear.cpp
     layers/softmax.cpp
     layers/sigmoid.cpp
-    matrix/matrix.cpp)
+    matrix/matrix.cpp
+    layers/crossentropy.cpp
+    functionality.cpp
+)
 
 set(HEADERS
     constants.h
@@ -19,7 +22,9 @@ set(HEADERS
 
     layers/linear.h
     layers/softmax.h
-    layers/sigmoid.h)
+    layers/sigmoid.h
+    layers/crossentropy.h
+)
 
 add_executable(
     MLP

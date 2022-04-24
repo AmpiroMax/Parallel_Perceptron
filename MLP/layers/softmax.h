@@ -12,7 +12,7 @@ class SoftMax : public Layer
   public:
     SoftMax(AlgorithmType algType = AlgorithmType::Slow);
 
-    Matrix forward(const Matrix &_X) override;
+    Matrix forward(const Matrix &X) override;
     Matrix backward(const Matrix &grads) override;
 };
 

@@ -6,31 +6,32 @@ SoftMax::SoftMax(AlgorithmType algType) : Ans(0, 0, 0, 1, algType)
     type = algType;
 }
 
-Matrix SoftMax::forward(const Matrix &_X)
+Matrix SoftMax::forward(const Matrix &X)
 {
-    // _Х.shape = {n classes, batch_size}
+    // Х.shape = {n classes, batch_size}
 
     // Считаем для каждого елемента батча сумму
     // экспонент, стоящую в знаменателе
-    std::vector<double> divider(_X.shape().second, 0.0);
-    for (int i = 0; i < _X.shape().first; ++i)
+    std::vector<double> divider(X.shape().second, 0.0);
+    for (int i = 0; i < X.shape().first; ++i)
     {
-        for (int j = 0; j < _X.shape().second; ++j)
+        for (int j = 0; j < X.shape().second; ++j)
         {
-            divider[j] += exp(_X[i][j]);
+            divider[j] += exp(X[i][j]);
         }
     }
 
     // Результат Softmax сохраняем, т.к. он необходим
     // для подсчёта градиента
     // Ans.shape = {n classes, batch_size}
-    Ans = Matrix(_X.shape().first, _X.shape().second, 0, 1, type);
+    if (Ans.shape().first == 0 || Ans.shape().second == 0)
+        Ans = Matrix(X.shape().first, X.shape().second, 0, 1, type);
 
-    for (int i = 0; i < _X.shape().first; ++i)
+    for (int i = 0; i < X.shape().first; ++i)
     {
-        for (int j = 0; j < _X.shape().second; ++j)
+        for (int j = 0; j < X.shape().second; ++j)
         {
-            Ans[i][j] = exp(_X[i][j]) / divider[j];
+            Ans[i][j] = exp(X[i][j]) / divider[j];
         }
     }
 
@@ -60,7 +61,8 @@ Matrix SoftMax::backward(const Matrix &grads)
         // элемента батча
         for (int i = 0; i < n_classes; ++i)
         {
-            // Диагональные элементы отличны от остальных
+            // Диагональные элементы отличны от остальных,
+            // имеею зависимость только от диагонального элемента
             // их считаем слегка по другому
             SoftMGrad[i][i] = Ans[i][k] * (1 - Ans[i][k]);
             for (int j = i + 1; j < n_classes; ++j)
