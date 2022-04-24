@@ -10,11 +10,15 @@ set(SOURCES
     layers/linear.cpp
     layers/softmax.cpp
     layers/sigmoid.cpp
-    matrix/matrix.cpp
     layers/crossentropy.cpp
+
     functionality.cpp
     dataloader/dataloader.cpp
+
+    matrix/matrix.cpp
+    gstring/GString.cpp
 )
+
 
 set(HEADERS
     constants.h
@@ -27,6 +31,8 @@ set(HEADERS
     layers/sigmoid.h
     layers/crossentropy.h
 
+    gstring/GString.h
+    errors/errors.h
 )
 
 add_executable(
