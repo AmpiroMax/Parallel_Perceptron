@@ -8,23 +8,30 @@
 
 constexpr int imgSize = 28;
 
-void trainLoop()
+std::vector<Layer> initModel()
 {
+    AlgorithmType type = AlgorithmType::Slow;
     std::vector<Layer> model;
-    Sigmoid activation;
+    Sigmoid activation(type);
+    CrossEntropy lossFunction(type);
 
-    model.push_back(Linear(imgSize * imgSize, 1024));
+    /// Input layer
+    model.push_back(Linear(imgSize * imgSize, 1024, true, type));
     model.push_back(activation);
 
-    model.push_back(Linear(1024, 1024));
+    /// Inner layer
+    model.push_back(Linear(1024, 1024, true, type));
     model.push_back(activation);
 
-    model.push_back(Linear(1024, 1024));
+    /// Output layer
+    model.push_back(Linear(1024, 10, true, type));
     model.push_back(activation);
 
-    model.push_back(Linear(1024, 10));
-    model.push_back(activation);
+    /// Softmax to bring to probability
+    model.push_back(SoftMax(type));
+}
 
-    model.push_back(SoftMax());
-    model.push_back(CrossEntropy());
+void trainLoop(std::vector<Layer> &model)
+{
+    std::vector<double> loss;
 }

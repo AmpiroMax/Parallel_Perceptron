@@ -13,17 +13,20 @@ set(SOURCES
     matrix/matrix.cpp
     layers/crossentropy.cpp
     functionality.cpp
+    dataloader/dataloader.cpp
 )
 
 set(HEADERS
     constants.h
     layers/layer.h
     matrix/Matrix.h
+    dataloader/dataloader.h
 
     layers/linear.h
     layers/softmax.h
     layers/sigmoid.h
     layers/crossentropy.h
+
 )
 
 add_executable(
