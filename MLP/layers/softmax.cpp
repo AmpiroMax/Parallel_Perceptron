@@ -38,12 +38,19 @@ Matrix SoftMax::forward(const Matrix &X)
     return Ans;
 }
 
-Matrix SoftMax::backward(const Matrix &grads)
+Matrix SoftMax::backward(const Matrix &_grads)
 {
     // Итоговый градиент должен быть размеров {n classes, batch_size}.
     // Однако для удобства копирования елементов, хранить будем
     // транспонированную матрицу.
     // Функция вернёт batchGrad.T()
+
+    // grads.shape = {n.classes, batch_size}
+    // grads[k].shape = {batch_size} - значения градиентов
+    // по всем батчам для конкретного класса
+    // Мне надо значение градиентов по всем классам по одному батчу
+    // поэтому градиент надо транспонировать
+    Matrix grads = _grads.T();
 
     // batchGrad.shape = {batch_size, n classes}
     Matrix batchGrad(Ans.shape().second, Ans.shape().first, 0, 1, type);
@@ -57,8 +64,7 @@ Matrix SoftMax::backward(const Matrix &grads)
     // элемента батча
     for (int k = 0; k < batchSize; ++k)
     {
-        // Подсчет градиента Softmax для отдельного
-        // элемента батча
+        // Подсчет градиента Softmax для к-го элемента батча
         for (int i = 0; i < n_classes; ++i)
         {
             // Диагональные элементы отличны от остальных,
@@ -74,7 +80,7 @@ Matrix SoftMax::backward(const Matrix &grads)
         }
 
         // Значение итогого градиента для к-го элемента батча
-        batchGrad[k] = SoftMGrad * grads;
+        batchGrad[k] = SoftMGrad * grads[k];
     }
 
     // Возвращаем матрацу градиентов по батчам
