@@ -3,12 +3,17 @@
 
 #include "layer.h"
 
-class CrossEntropy : public Layer
+class CrossEntropy
 {
+  private:
+    Matrix truthLabels;
+    Matrix predictedLabels;
+    AlgorithmType type;
+
   public:
-    CrossEntropy();
-    virtual Matrix forward(const Matrix &X);
-    virtual Matrix backward(const Matrix &grads);
+    CrossEntropy(AlgorithmType algType = AlgorithmType::Slow);
+    double forward(const Matrix &predict, const Matrix &truth);
+    Matrix backward();
 };
 
 #endif // CROSSENTROPY_H
