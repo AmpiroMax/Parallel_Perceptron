@@ -8,14 +8,18 @@ class Linear : public Layer
 {
   private:
     Matrix W;
-    Matrix bias;
     Matrix X;
+    Matrix bias;
+    Matrix gradW;
+
     AlgorithmType type;
 
   public:
     Linear(size_t in, size_t out, bool _bias = true, AlgorithmType algType = AlgorithmType::Slow);
     Matrix forward(const Matrix &X) override;
     Matrix backward(const Matrix &grads) override;
+
+    void gradienDescend(double lr);
 };
 
 #endif // LINEAR_H

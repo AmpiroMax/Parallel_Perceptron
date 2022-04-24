@@ -10,7 +10,7 @@ CrossEntropy::CrossEntropy(AlgorithmType algType)
 /**
  * @brief Calculate CrossEntropy value
  *
- * @param predict - Matrix(n.classes, batch_size) predicted logits
+ * @param predict - Matrix(batch_size, n.classes) predicted logits
  * @param truth - Matrix(batch_size, 1) numbers of truth classes
  * @return loss function value
  */
@@ -20,11 +20,13 @@ double CrossEntropy::forward(const Matrix &predict, const Matrix &truth)
     predictedLabels = predict;
     double rezult = 0.0;
 
-    for (int i = 0; i < predict.shape().second; ++i)
+    for (int i = 0; i < predict.shape().first; ++i)
     {
-        rezult += -log(predict[truth[i]][i]);
+        rezult += -log(predict[i][truth[i]]);
     }
-    rezult /= predict.shape().second;
+
+    // Берем среднее значение ошибки по батчу
+    rezult /= predict.shape().first;
     return rezult;
 }
 
@@ -38,9 +40,9 @@ Matrix CrossEntropy::backward()
     Matrix rezult(predictedLabels.shape().first, predictedLabels.shape().second, 0, 1, type);
 
     /// dL/dx = (-t1/p1, ..., -tn/pn)
-    for (int i = 0; i < rezult.shape().second; ++i)
+    for (int i = 0; i < rezult.shape().first; ++i)
     {
-        rezult[truthLabels[i]][i] = -1.0 / predictedLabels[truthLabels[i]][i];
+        rezult[i][truthLabels[i]] = -1.0 / predictedLabels[i][truthLabels[i]];
     }
 
     return rezult;

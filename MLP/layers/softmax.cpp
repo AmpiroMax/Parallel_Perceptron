@@ -1,64 +1,52 @@
 #include "softmax.h"
 #include <cmath>
 
-SoftMax::SoftMax(AlgorithmType algType) : Ans(0, 0, 0, 1, algType)
+SoftMax::SoftMax(AlgorithmType algType) : SM(0, 0, 0, 1, algType)
 {
     type = algType;
 }
-
+/**
+ * @brief SoftMax::forward
+ * @param X - Matrix(batch_size, num classes)
+ * @return
+ */
 Matrix SoftMax::forward(const Matrix &X)
 {
-    // Х.shape = {n classes, batch_size}
-
     // Считаем для каждого елемента батча сумму
     // экспонент, стоящую в знаменателе
-    std::vector<double> divider(X.shape().second, 0.0);
-    for (int i = 0; i < X.shape().first; ++i)
-    {
-        for (int j = 0; j < X.shape().second; ++j)
-        {
-            divider[j] += exp(X[i][j]);
-        }
-    }
-
-    // Результат Softmax сохраняем, т.к. он необходим
-    // для подсчёта градиента
-    // Ans.shape = {n classes, batch_size}
-    if (Ans.shape().first == 0 || Ans.shape().second == 0)
-        Ans = Matrix(X.shape().first, X.shape().second, 0, 1, type);
+    std::vector<double> divider(X.shape().first, 0.0);
 
     for (int i = 0; i < X.shape().first; ++i)
     {
         for (int j = 0; j < X.shape().second; ++j)
         {
-            Ans[i][j] = exp(X[i][j]) / divider[j];
+            divider[i] += exp(X[i][j]);
         }
     }
 
-    return Ans;
+    // Результат Softmax сохраняем, т.к. он необходим для подсчёта градиента
+    // SM.shape = {batch_size, num classes}
+    if (SM.shape().first == 0 || SM.shape().second == 0)
+        SM = Matrix(X.shape().first, X.shape().second, 0, 1, type);
+
+    for (int i = 0; i < X.shape().first; ++i)
+    {
+        for (int j = 0; j < X.shape().second; ++j)
+        {
+            SM[i][j] = exp(X[i][j]) / divider[i];
+        }
+    }
+
+    return SM;
 }
 
 Matrix SoftMax::backward(const Matrix &_grads)
 {
-    // Итоговый градиент должен быть размеров {n classes, batch_size}.
-    // Однако для удобства копирования елементов, хранить будем
-    // транспонированную матрицу.
-    // Функция вернёт batchGrad.T()
+    int batchSize = SM.shape().first;
+    int n_classes = SM.shape().second;
 
-    // grads.shape = {n.classes, batch_size}
-    // grads[k].shape = {batch_size} - значения градиентов
-    // по всем батчам для конкретного класса
-    // Мне надо значение градиентов по всем классам по одному батчу
-    // поэтому градиент надо транспонировать
-    Matrix grads = _grads.T();
-
-    // batchGrad.shape = {batch_size, n classes}
-    Matrix batchGrad(Ans.shape().second, Ans.shape().first, 0, 1, type);
-    // SoftMGrad.shape = {n classes, n classes}
-    Matrix SoftMGrad(Ans.shape().first, Ans.shape().first, 0, 1, type);
-
-    int batchSize = batchGrad.shape().first;
-    int n_classes = SoftMGrad.shape().first;
+    Matrix batchGrad(batchSize, n_classes, 0, 1, type);
+    Matrix SoftMGrad(n_classes, n_classes, 0, 1, type);
 
     // проход по результату SoftMax для каждого
     // элемента батча
@@ -70,20 +58,18 @@ Matrix SoftMax::backward(const Matrix &_grads)
             // Диагональные элементы отличны от остальных,
             // имеею зависимость только от диагонального элемента
             // их считаем слегка по другому
-            SoftMGrad[i][i] = Ans[i][k] * (1 - Ans[i][k]);
+            SoftMGrad[i][i] = SM[k][i] * (1 - SM[k][i]);
             for (int j = i + 1; j < n_classes; ++j)
             {
                 // Матрица градиента от softmax симметричная
-                SoftMGrad[i][j] = -Ans[i][k] * Ans[j][k];
-                SoftMGrad[j][i] = -Ans[i][k] * Ans[j][k];
+                SoftMGrad[i][j] = -SM[k][i] * SM[k][j];
+                SoftMGrad[j][i] = -SM[k][i] * SM[k][j];
             }
         }
 
         // Значение итогого градиента для к-го элемента батча
-        batchGrad[k] = SoftMGrad * grads[k];
+        batchGrad[k] = _grads[k] * SoftMGrad;
     }
 
-    // Возвращаем матрацу градиентов по батчам
-    // размером {n classes, batch_size}
-    return batchGrad.T();
+    return batchGrad;
 }

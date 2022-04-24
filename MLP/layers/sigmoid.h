@@ -7,7 +7,7 @@ class Sigmoid : public Layer
 {
 
   private:
-    Matrix Ans;
+    Matrix sigma;
     AlgorithmType type;
 
   public:

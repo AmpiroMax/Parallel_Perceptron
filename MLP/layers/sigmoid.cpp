@@ -1,46 +1,55 @@
 #include "sigmoid.h"
 #include <cmath>
 
-Sigmoid::Sigmoid(AlgorithmType algType) : Ans(0, 0, 0, 1, algType)
+Sigmoid::Sigmoid(AlgorithmType algType) : sigma(0, 0, 0, 1, algType)
 {
     type = algType;
 }
 
+/**
+ * @brief Sigmoid::forward
+ * @param X                                 - Matrix(batch_size, num features)
+ * @return Matrix(batch_size, num features) - результат применения сигмоиды к каждому
+ *                                          - элементу входной матрицы
+ */
 Matrix Sigmoid::forward(const Matrix &X)
 {
-    // Х.shape = {num features, batch_size}
-    // Ans.shape = {num features, batch_size}
-    if (Ans.shape().first == 0 || Ans.shape().second == 0)
-        Ans = Matrix(X.shape().first, X.shape().second, 0, 1, type);
+    /// sigma   .shape = {batch_size, num features}
+    if (sigma.shape().first == 0 || sigma.shape().second == 0)
+        sigma = Matrix(X.shape().first, X.shape().second, 0, 1, type);
 
-    for (int i = 0; i < Ans.shape().first; ++i)
+    for (int i = 0; i < sigma.shape().first; ++i)
     {
-        for (int j = 0; j < Ans.shape().second; ++j)
+        for (int j = 0; j < sigma.shape().second; ++j)
         {
-            Ans[i][j] = sigm(X[i][j]);
+            sigma[i][j] = sigm(X[i][j]);
         }
     }
-    return Ans;
+    return sigma;
 }
-
+/**
+ * @brief Sigmoid::backward
+ * @param grads - Matrix(batch_size, num features)
+ * @return
+ */
 Matrix Sigmoid::backward(const Matrix &grads)
 {
 
     // Градиент сигмоиды имеет формулу
     // ds/dx = s * (1 - s)
-    for (int i = 0; i < Ans.shape().first; ++i)
+    for (int i = 0; i < sigma.shape().first; ++i)
     {
-        for (int j = 0; j < Ans.shape().second; ++j)
+        for (int j = 0; j < sigma.shape().second; ++j)
         {
             // Градиент sigmoid зависит только от переменной,
             // по которой считалось значение самой функции.
             // Поэтому можно не создавать новой матрицы для хранения
             // градиентов, а заменять значение функции на её производную
-            Ans[i][j] = Ans[i][j] * (1 - Ans[i][j]);
+            sigma[i][j] = sigma[i][j] * (1 - sigma[i][j]) * grads[i][j];
         }
     }
 
-    return Ans.T() * grads;
+    return sigma;
 }
 
 double Sigmoid::sigm(double x)

@@ -6,7 +6,7 @@
 class SoftMax : public Layer
 {
   private:
-    Matrix Ans;
+    Matrix SM;
     AlgorithmType type;
 
   public:
