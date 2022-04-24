@@ -15,20 +15,20 @@ std::vector<Layer> initModel()
     Sigmoid activation(type);
     CrossEntropy lossFunction(type);
 
-    /// Input layer
-    model.push_back(Linear(imgSize * imgSize, 1024, true, type));
-    model.push_back(activation);
+    //    /// Input layer
+    //    model.push_back(Linear(imgSize * imgSize, 1024, true, type));
+    //    model.push_back(activation);
 
-    /// Inner layer
-    model.push_back(Linear(1024, 1024, true, type));
-    model.push_back(activation);
+    //    /// Inner layer
+    //    model.push_back(Linear(1024, 1024, true, type));
+    //    model.push_back(activation);
 
-    /// Output layer
-    model.push_back(Linear(1024, 10, true, type));
-    model.push_back(activation);
+    //    /// Output layer
+    //    model.push_back(Linear(1024, 10, true, type));
+    //    model.push_back(activation);
 
-    /// Softmax to bring to probability
-    model.push_back(SoftMax(type));
+    //    /// Softmax to bring to probability
+    //    model.push_back(SoftMax(type));
 }
 
 void trainLoop(std::vector<Layer> &model)
