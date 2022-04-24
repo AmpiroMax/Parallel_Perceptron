@@ -10,7 +10,8 @@ set(SOURCES
     layers/linear.cpp
     layers/softmax.cpp
     layers/sigmoid.cpp
-    matrix/matrix.cpp)
+    matrix/matrix.cpp
+    gstring/GString.cpp)
 
 set(HEADERS
     constants.h
@@ -19,7 +20,9 @@ set(HEADERS
 
     layers/linear.h
     layers/softmax.h
-    layers/sigmoid.h)
+    layers/sigmoid.h
+    gstring/GString.h
+    errors/errors.h)
 
 add_executable(
     MLP

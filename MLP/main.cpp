@@ -1,15 +1,26 @@
 #include <iostream>
-#include <vector>
 
+#include "gstring/GString.h"
 #include "matrix/Matrix.h"
-
-using std::size_t;
 
 int main()
 {
-    std::vector<std::vector<double>> vect(1, {1, 2, 3});
+    std::vector<std::vector<double>> vector;
 
-    Matrix vector(vect, 1, AlgorithmType::Slow);
+    for (size_t i = 0; i < 3; ++i)
+    {
+        std::vector<double> line;
 
-    std::cout <<  vector * vector.T() << "\n";
+        for (size_t j = 0; j < 4; ++j)
+            line.push_back(i + j + 1);
+
+        vector.push_back(line);
+    }
+
+    Matrix mat(vector);
+    GString str({1, 2, 3, 4});
+
+    std::cout << mat << '\n';
+
+    std::cout << str + mat << '\n';
 }
