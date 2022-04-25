@@ -21,6 +21,4 @@ int main()
     GString str({1, 2, 3, 4});
 
     std::cout << mat << '\n';
-
-    std::cout << str + mat << '\n';
 }

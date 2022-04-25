@@ -287,10 +287,11 @@ const Matrix Matrix::__dotSlow(const Matrix &rhs) const
 
     Matrix product(shape().first, rhs.shape().second, _n_jobs, _type);
 
-    for (size_t i = 0; i < product.shape().first; ++i)
-        for (size_t j = 0; j < product.shape().second; ++j)
-            for (size_t k = 0; k < shape().second; ++k)
-                product._mat[i][j] += _mat[i][k] * rhs._mat[k][j];
+    for (size_t i = 0; i < shape().first; ++i)
+    {
+        for (size_t j = 0; j < shape().second; ++j)
+            product[i] = product[i] + _mat[i][j] * rhs[j];
+    }
 
     return product;
 }
