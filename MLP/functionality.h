@@ -11,7 +11,7 @@
 #include "layers/softmax.h"
 #include "perceptron.h"
 
-void trainLoop(Perceptron model);
+void trainLoop(Perceptron &model);
 
 void testDataloader();
 

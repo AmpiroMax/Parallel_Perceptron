@@ -125,10 +125,43 @@ Dataloader::Dataloader(std::string path)
         throw std::runtime_error("Images and labels number are not the same");
     }
     convertData(rawLabels, rawImages);
-    printData();
 
     delete[] rawLabels;
     delete[] rawImages;
+}
+
+std::vector<std::vector<std::vector<double>>> Dataloader::getImages(int batchSize)
+{
+    std::vector<std::vector<std::vector<double>>> imageBatches;
+
+    for (int i = 0; i < (images.size() / batchSize); ++i)
+    {
+        std::vector<std::vector<double>> tmp;
+        for (int j = 0; j < batchSize; ++j)
+        {
+            tmp.push_back(images[i * batchSize + j]);
+        }
+        imageBatches.push_back(tmp);
+    }
+
+    return imageBatches;
+}
+
+std::vector<std::vector<int>> Dataloader::getLabels(int batchSize)
+{
+    std::vector<std::vector<int>> labelBatches;
+
+    for (int i = 0; i < (labels.size() / batchSize); ++i)
+    {
+        std::vector<int> tmp;
+        for (int j = 0; j < batchSize; ++j)
+        {
+            tmp.push_back(labels[i * batchSize + j]);
+        }
+        labelBatches.push_back(tmp);
+    }
+
+    return labelBatches;
 }
 
 void Dataloader::printData()

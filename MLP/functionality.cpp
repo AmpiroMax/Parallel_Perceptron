@@ -1,14 +1,40 @@
 #include "functionality.h"
 
-void trainLoop(Perceptron model)
+void trainLoop(Perceptron &model)
 {
     std::vector<double> loss;
 }
 
 void testDataloader()
 {
-    std::string path = "C:/Max/Progra/Parallel_Perceptron/MNIST_data/MNIST/test";
-    Dataloader testLoader(path);
+    std::string path = "C:/Max/Progra/Parallel_Perceptron/MNIST_data/MNIST/train";
+    Dataloader trainLoader(path);
+
+    int batchSize = 10;
+
+    std::vector<std::vector<std::vector<double>>> datasetImages = trainLoader.getImages(batchSize);
+    std::vector<std::vector<int>> datasetLabels = trainLoader.getLabels(batchSize);
+
+    for (int batchNum = 0; batchNum < 3; ++batchNum)
+    {
+        Matrix images(datasetImages[batchNum]);
+
+        std::cout << "-------------------------------------------" << std::endl;
+
+        for (int i = 0; i < batchSize; ++i)
+        {
+            std::cout << "CLASS: " << datasetLabels[batchNum][i] << std::endl;
+            std::cout << "IMAGE: " << std::endl;
+
+            for (int j = 0; j < IMAGE_SIZE * IMAGE_SIZE; ++j)
+            {
+                if (j % IMAGE_SIZE == 0)
+                    std::cout << std::endl;
+                std::cout << char(images[i][j]) << " ";
+            }
+            std::cout << std::endl;
+        }
+    }
 }
 
 void testLayers()

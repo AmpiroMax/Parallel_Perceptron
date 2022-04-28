@@ -21,6 +21,8 @@ class Dataloader
 
   public:
     Dataloader(std::string path);
+    std::vector<std::vector<std::vector<double>>> getImages(int batchSize);
+    std::vector<std::vector<int>> getLabels(int batchSize);
 
     void printData();
 };
