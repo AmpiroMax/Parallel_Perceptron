@@ -20,6 +20,9 @@ double CrossEntropy::forward(const Matrix &predict, const Matrix &truth)
     predictedLabels = predict;
     double rezult = 0.0;
 
+    std::cout << "predict " << predict.shape().first << " " << predict.shape().second << std::endl;
+    std::cout << "truth   " << truth.shape().first << " " << truth.shape().second << std::endl;
+
     for (int i = 0; i < predict.shape().first; ++i)
     {
         rezult += -log(predict[i][truth[i][0]]);

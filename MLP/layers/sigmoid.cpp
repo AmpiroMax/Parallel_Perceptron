@@ -37,6 +37,7 @@ Matrix Sigmoid::backward(const Matrix &grads)
 
     // Градиент сигмоиды имеет формулу
     // ds/dx = s * (1 - s)
+
     for (int i = 0; i < sigma.shape().first; ++i)
     {
         for (int j = 0; j < sigma.shape().second; ++j)
@@ -48,7 +49,6 @@ Matrix Sigmoid::backward(const Matrix &grads)
             sigma[i][j] = sigma[i][j] * (1 - sigma[i][j]) * grads[i][j];
         }
     }
-
     return sigma;
 }
 

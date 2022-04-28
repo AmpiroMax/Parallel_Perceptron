@@ -9,7 +9,7 @@ class Linear : public Layer
   private:
     Matrix W;
     Matrix X;
-    Matrix bias;
+    GString bias;
     Matrix gradW;
 
     AlgorithmType type;

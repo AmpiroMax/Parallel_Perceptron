@@ -25,6 +25,7 @@ set(HEADERS
     layers/layer.h
     matrix/Matrix.h
     dataloader/dataloader.h
+    functionality.h
 
     layers/linear.h
     layers/softmax.h
