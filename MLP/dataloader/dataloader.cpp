@@ -1,4 +1,8 @@
+#include "dataloader.h"
+#include "../constants.h"
+#include <cmath>
 #include <fstream>
+#include <iostream>
 #include <vector>
 
 /**
@@ -6,7 +10,7 @@
  * @param i - число, которое будет обращаться
  * @return перевёрнытый int
  */
-int reverseInt(int i)
+int Dataloader::reverseInt(int i)
 {
     unsigned char c1, c2, c3, c4;
     c1 = i & 255, c2 = (i >> 8) & 255, c3 = (i >> 16) & 255, c4 = (i >> 24) & 255;
@@ -23,9 +27,9 @@ int reverseInt(int i)
  * Считывает изображения и созраняет их в матрицу uchar**. Каждое изображение
  * кодируется положительным целым числом от 0 до 255, представленное char.
  */
-char **read_mnist_images(std::string full_path, int &number_of_images, int &image_size)
+char **Dataloader::readMNISTImages(std::string fullPath, int &numberOfImages, int &imageSize)
 {
-    std::ifstream file(full_path, std::ios::binary);
+    std::ifstream file(fullPath, std::ios::binary);
 
     if (file.is_open())
     {
@@ -37,23 +41,23 @@ char **read_mnist_images(std::string full_path, int &number_of_images, int &imag
         if (magic_number != 2051)
             throw std::runtime_error("Invalid MNIST image file!");
 
-        file.read((char *)&number_of_images, sizeof(number_of_images)), number_of_images = reverseInt(number_of_images);
+        file.read((char *)&numberOfImages, sizeof(numberOfImages)), numberOfImages = reverseInt(numberOfImages);
         file.read((char *)&n_rows, sizeof(n_rows)), n_rows = reverseInt(n_rows);
         file.read((char *)&n_cols, sizeof(n_cols)), n_cols = reverseInt(n_cols);
 
-        image_size = n_rows * n_cols;
+        imageSize = n_rows * n_cols;
 
-        char **_dataset = new char *[number_of_images];
-        for (int i = 0; i < number_of_images; i++)
+        char **_dataset = new char *[numberOfImages];
+        for (int i = 0; i < numberOfImages; i++)
         {
-            _dataset[i] = new char[image_size];
-            file.read((char *)_dataset[i], image_size);
+            _dataset[i] = new char[imageSize];
+            file.read((char *)_dataset[i], imageSize);
         }
         return _dataset;
     }
     else
     {
-        throw std::runtime_error("Cannot open file `" + full_path + "`!");
+        throw std::runtime_error("Cannot open file `" + fullPath + "`!");
     }
 }
 
@@ -64,9 +68,9 @@ char **read_mnist_images(std::string full_path, int &number_of_images, int &imag
  * @return массив uchar*   - массив из значений labels для
  *                           соответствующей картинки
  */
-char *read_mnist_labels(std::string full_path, int &number_of_labels)
+char *Dataloader::readMNISTLabels(std::string fullPath, int &numberOfLabels)
 {
-    std::ifstream file(full_path, std::ios::binary);
+    std::ifstream file(fullPath, std::ios::binary);
 
     if (file.is_open())
     {
@@ -77,10 +81,10 @@ char *read_mnist_labels(std::string full_path, int &number_of_labels)
         if (magic_number != 2049)
             throw std::runtime_error("Invalid MNIST label file!");
 
-        file.read((char *)&number_of_labels, sizeof(number_of_labels)), number_of_labels = reverseInt(number_of_labels);
+        file.read((char *)&numberOfLabels, sizeof(numberOfLabels)), numberOfLabels = reverseInt(numberOfLabels);
 
-        char *_dataset = new char[number_of_labels];
-        for (int i = 0; i < number_of_labels; i++)
+        char *_dataset = new char[numberOfLabels];
+        for (int i = 0; i < numberOfLabels; i++)
         {
             file.read((char *)&_dataset[i], 1);
         }
@@ -88,6 +92,58 @@ char *read_mnist_labels(std::string full_path, int &number_of_labels)
     }
     else
     {
-        throw std::runtime_error("Unable to open file `" + full_path + "`!");
+        throw std::runtime_error("Unable to open file `" + fullPath + "`!");
     }
+}
+
+void Dataloader::convertData(char *rawLabels, char **rawImages)
+{
+    for (int i = 0; i < numOfLabels; ++i)
+    {
+        std::vector<double> tmp;
+        for (int j = 0; j < imgSize; ++j)
+        {
+            tmp.push_back((double)(rawImages[i][j]));
+        }
+
+        labels.push_back((double)(rawLabels[i]));
+        images.push_back(tmp);
+    }
+}
+
+Dataloader::Dataloader(std::string path)
+{
+    char *rawLabels = readMNISTLabels(path + "/labels", numOfLabels);
+    char **rawImages = readMNISTImages(path + "/images", numOfImages, imgSize);
+
+    std::cout << "Num of labels, images, imgSize: " << numOfLabels << " " << numOfImages << " " << imgSize << std::endl;
+
+    if (numOfImages != numOfLabels)
+    {
+        delete[] rawLabels;
+        delete[] rawImages;
+        throw std::runtime_error("Images and labels number are not the same");
+    }
+    convertData(rawLabels, rawImages);
+    printData();
+
+    delete[] rawLabels;
+    delete[] rawImages;
+}
+
+void Dataloader::printData()
+{
+    for (int i = 0; i < 10; ++i)
+    {
+        std::cout << std::endl;
+        std::cout << labels[i] << std::endl;
+        for (int j = 0; j < imgSize; ++j)
+        {
+            if (j % IMAGE_SIZE == 0)
+                std::cout << std::endl;
+            std::cout << char(images[i][j]) << " ";
+        }
+    }
+    std::cout << std::endl;
+    std::cout << std::endl;
 }

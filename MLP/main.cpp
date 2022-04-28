@@ -6,7 +6,7 @@
 
 int main()
 {
-    testLayers();
+    testDataloader();
 
     return 0;
 }

@@ -4,16 +4,16 @@
 #include <iostream>
 #include <vector>
 
+#include "dataloader/dataloader.h"
 #include "layers/crossentropy.h"
 #include "layers/linear.h"
 #include "layers/sigmoid.h"
 #include "layers/softmax.h"
+#include "perceptron.h"
 
-constexpr int imgSize = 28;
+void trainLoop(Perceptron model);
 
-std::vector<Layer> initModel();
-
-void trainLoop(std::vector<Layer> &model);
+void testDataloader();
 
 void testLayers();
 

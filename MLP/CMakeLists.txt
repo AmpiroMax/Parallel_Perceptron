@@ -7,10 +7,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(SOURCES
     main.cpp
+
     layers/linear.cpp
     layers/softmax.cpp
     layers/sigmoid.cpp
     layers/crossentropy.cpp
+    perceptron.cpp
 
     functionality.cpp
     dataloader/dataloader.cpp
@@ -21,19 +23,20 @@ set(SOURCES
 
 
 set(HEADERS
-    constants.h
     layers/layer.h
-    matrix/Matrix.h
-    dataloader/dataloader.h
-    functionality.h
-
     layers/linear.h
     layers/softmax.h
     layers/sigmoid.h
     layers/crossentropy.h
+    perceptron.h
 
-    gstring/GString.h
+    functionality.h
+    dataloader/dataloader.h
+
+    constants.h
     errors/errors.h
+    gstring/GString.h
+    matrix/Matrix.h
 )
 
 add_executable(
