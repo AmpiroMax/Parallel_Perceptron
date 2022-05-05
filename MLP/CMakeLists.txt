@@ -1,9 +1,20 @@
-cmake_minimum_required(VERSION 3.5)
-
+cmake_minimum_required(VERSION 3.8 FATAL_ERROR)
 project(MLP LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+
+# guard against in-source builds
+if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
+    message(FATAL_ERROR "In-source builds not allowed. Please make a new directory (called a build directory) and run CMake from there. You may need to remove CMakeCache.txt. ")
+endif()
+
+# find python libraries
+find_package(Python3 COMPONENTS Interpreter Development NumPy REQUIRED)
+find_package(PythonLibs 3.0 REQUIRED)
+include_directories(${PYTHON3_INCLUDE_DIRS} ${NumPy_INCLUDE_DIRS})
+include_directories(SYSTEM ${matplotlib_SOURCE_DIR})
+
 
 set(SOURCES
     main.cpp
@@ -21,7 +32,6 @@ set(SOURCES
     gstring/GString.cpp
 )
 
-
 set(HEADERS
     layers/layer.h
     layers/linear.h
@@ -37,6 +47,8 @@ set(HEADERS
     errors/errors.h
     gstring/GString.h
     matrix/Matrix.h
+
+    matplotlibcpp.h
 )
 
 add_executable(
@@ -44,3 +56,15 @@ add_executable(
     ${SOURCES}
     ${HEADERS}
 )
+
+
+# link python and numpy
+target_link_libraries(
+    MLP
+    PRIVATE
+        ${PYTHON_LIBRARIES}
+        Python3::NumPy
+)
+
+
+
