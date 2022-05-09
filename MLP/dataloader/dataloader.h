@@ -4,6 +4,8 @@
 #include <fstream>
 #include <vector>
 
+typedef unsigned char uchar;
+
 class Dataloader
 {
   private:
@@ -11,18 +13,18 @@ class Dataloader
     int numOfLabels;
     int imgSize;
 
-    std::vector<int> labels;
+    std::vector<double> labels;
     std::vector<std::vector<double>> images;
 
     int reverseInt(int i);
-    char *readMNISTLabels(std::string fullPath, int &numberOfLabels);
-    char **readMNISTImages(std::string fullPath, int &numberOfImages, int &imageSize);
-    void convertData(char *rawLabels, char **rawImages);
+    uchar *readMNISTLabels(const std::string &fullPath, int &numberOfLabels);
+    uchar **readMNISTImages(const std::string &fullPath, int &numberOfImages, int &imageSize);
+    void convertData(uchar *rawLabels, uchar **rawImages);
 
   public:
     Dataloader(std::string path);
     std::vector<std::vector<std::vector<double>>> getImages(int batchSize);
-    std::vector<std::vector<int>> getLabels(int batchSize);
+    std::vector<std::vector<double>> getLabels(int batchSize);
 
     void printData();
 };

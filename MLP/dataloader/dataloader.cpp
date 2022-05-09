@@ -26,8 +26,10 @@ int Dataloader::reverseInt(int i)
  *
  * Считывает изображения и созраняет их в матрицу uchar**. Каждое изображение
  * кодируется положительным целым числом от 0 до 255, представленное char.
+ * Размер считанных изображений и их число запишатся в numberOfImages и
+ * imagesSize соответственно.
  */
-char **Dataloader::readMNISTImages(std::string fullPath, int &numberOfImages, int &imageSize)
+uchar **Dataloader::readMNISTImages(const std::string &fullPath, int &numberOfImages, int &imageSize)
 {
     std::ifstream file(fullPath, std::ios::binary);
 
@@ -47,10 +49,10 @@ char **Dataloader::readMNISTImages(std::string fullPath, int &numberOfImages, in
 
         imageSize = n_rows * n_cols;
 
-        char **_dataset = new char *[numberOfImages];
+        uchar **_dataset = new uchar *[numberOfImages];
         for (int i = 0; i < numberOfImages; i++)
         {
-            _dataset[i] = new char[imageSize];
+            _dataset[i] = new uchar[imageSize];
             file.read((char *)_dataset[i], imageSize);
         }
         return _dataset;
@@ -68,7 +70,7 @@ char **Dataloader::readMNISTImages(std::string fullPath, int &numberOfImages, in
  * @return массив uchar*   - массив из значений labels для
  *                           соответствующей картинки
  */
-char *Dataloader::readMNISTLabels(std::string fullPath, int &numberOfLabels)
+uchar *Dataloader::readMNISTLabels(const std::string &fullPath, int &numberOfLabels)
 {
     std::ifstream file(fullPath, std::ios::binary);
 
@@ -83,7 +85,7 @@ char *Dataloader::readMNISTLabels(std::string fullPath, int &numberOfLabels)
 
         file.read((char *)&numberOfLabels, sizeof(numberOfLabels)), numberOfLabels = reverseInt(numberOfLabels);
 
-        char *_dataset = new char[numberOfLabels];
+        uchar *_dataset = new uchar[numberOfLabels];
         for (int i = 0; i < numberOfLabels; i++)
         {
             file.read((char *)&_dataset[i], 1);
@@ -96,7 +98,7 @@ char *Dataloader::readMNISTLabels(std::string fullPath, int &numberOfLabels)
     }
 }
 
-void Dataloader::convertData(char *rawLabels, char **rawImages)
+void Dataloader::convertData(uchar *rawLabels, uchar **rawImages)
 {
     for (int i = 0; i < numOfLabels; ++i)
     {
@@ -113,8 +115,8 @@ void Dataloader::convertData(char *rawLabels, char **rawImages)
 
 Dataloader::Dataloader(std::string path)
 {
-    char *rawLabels = readMNISTLabels(path + "/labels", numOfLabels);
-    char **rawImages = readMNISTImages(path + "/images", numOfImages, imgSize);
+    uchar *rawLabels = readMNISTLabels(path + "/labels", numOfLabels);
+    uchar **rawImages = readMNISTImages(path + "/images", numOfImages, imgSize);
 
     std::cout << "Num of labels, images, imgSize: " << numOfLabels << " " << numOfImages << " " << imgSize << std::endl;
 
@@ -147,13 +149,13 @@ std::vector<std::vector<std::vector<double>>> Dataloader::getImages(int batchSiz
     return imageBatches;
 }
 
-std::vector<std::vector<int>> Dataloader::getLabels(int batchSize)
+std::vector<std::vector<double>> Dataloader::getLabels(int batchSize)
 {
-    std::vector<std::vector<int>> labelBatches;
+    std::vector<std::vector<double>> labelBatches;
 
     for (int i = 0; i < (labels.size() / batchSize); ++i)
     {
-        std::vector<int> tmp;
+        std::vector<double> tmp;
         for (int j = 0; j < batchSize; ++j)
         {
             tmp.push_back(labels[i * batchSize + j]);
@@ -174,7 +176,7 @@ void Dataloader::printData()
         {
             if (j % IMAGE_SIZE == 0)
                 std::cout << std::endl;
-            std::cout << char(images[i][j]) << " ";
+            std::cout << (images[i][j]) << " ";
         }
     }
     std::cout << std::endl;
