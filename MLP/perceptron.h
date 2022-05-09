@@ -17,7 +17,7 @@ class Perceptron
     double lr;
 
   public:
-    Perceptron(int inFeatures, int numClasses = 10, double learningRate = 1e-3, int layersNum = 3,
+    Perceptron(int inFeatures, int numClasses = 10, double learningRate = 1e-5, int layersNum = 3,
                AlgorithmType type = AlgorithmType::Slow);
     Matrix predict(const Matrix &data);
     void backprop(const Matrix &grads);

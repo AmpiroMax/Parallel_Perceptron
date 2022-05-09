@@ -25,10 +25,12 @@ Matrix Perceptron::predict(const Matrix &data)
 {
     Matrix out = data;
 
-    for (int i = 0; layers.size(); ++i)
+    for (int i = 0; i < layers.size(); ++i)
     {
-        out = activation.forward(layers[i].forward(out));
+        out = layers[i].forward(out);
+        out = activation.forward(out);
     }
+    out = layers[layers.size() - 1].forward(out);
 
     return softmax.forward(out);
 }
@@ -36,11 +38,14 @@ Matrix Perceptron::predict(const Matrix &data)
 void Perceptron::backprop(const Matrix &grads)
 {
     Matrix grad = softmax.backward(grads);
-
-    for (int i = layers.size() - 1; i >= 0; --i)
+    for (int i = layers.size() - 1; i >= 1; --i)
     {
-        grad = activation.backward(grad);
         grad = layers[i].backward(grad);
+        grad = activation.backward(grad);
         layers[i].gradienDescend(lr);
     }
+
+    // std::cout << grad.T() << std::endl;
+    layers[0].backward(grad);
+    layers[0].gradienDescend(lr);
 }

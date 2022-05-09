@@ -11,10 +11,14 @@
 #include "layers/softmax.h"
 #include "perceptron.h"
 
-void trainLoop(Perceptron &model);
-
 void testDataloader();
 
 void testLayers();
+
+void clip(Matrix &images);
+
+void normolize(Matrix &images);
+
+std::vector<double> trainLoop(Perceptron &model, AlgorithmType type = AlgorithmType::Slow);
 
 #endif // FUNCTIONALITY_H
