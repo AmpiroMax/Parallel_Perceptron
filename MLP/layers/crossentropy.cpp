@@ -20,12 +20,11 @@ double CrossEntropy::forward(const Matrix &predict, const Matrix &truth)
     predictedLabels = predict;
     double rezult = 0.0;
 
-    std::cout << "predict " << predict.shape().first << " " << predict.shape().second << std::endl;
-    std::cout << "truth   " << truth.shape().first << " " << truth.shape().second << std::endl;
-
     for (int i = 0; i < predict.shape().first; ++i)
     {
-        rezult += -log(predict[i][truth[i][0]]);
+        // std::cout << truth[0][i] << " ";
+        // std::cout << predict[i] << std::endl;
+        rezult += -log(predict[i][truth[0][i]]);
     }
 
     // Берем среднее значение ошибки по батчу
@@ -45,7 +44,7 @@ Matrix CrossEntropy::backward()
     /// dL/dx = (-t1/p1, ..., -tn/pn)
     for (int i = 0; i < rezult.shape().first; ++i)
     {
-        rezult[i][truthLabels[i][0]] = -1.0 / predictedLabels[i][truthLabels[i][0]];
+        rezult[i][truthLabels[0][i]] = -1.0 / predictedLabels[i][truthLabels[0][i]];
     }
 
     return rezult;

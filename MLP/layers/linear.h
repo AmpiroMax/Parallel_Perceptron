@@ -11,6 +11,7 @@ class Linear : public Layer
     Matrix X;
     GString bias;
     Matrix gradW;
+    Matrix gradB;
 
     AlgorithmType type;
 

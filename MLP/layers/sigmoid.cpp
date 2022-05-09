@@ -14,9 +14,11 @@ Sigmoid::Sigmoid(AlgorithmType algType) : sigma(0, 0, 0, 1, algType)
  */
 Matrix Sigmoid::forward(const Matrix &X)
 {
-    /// sigma   .shape = {batch_size, num features}
+    /// sigma.shape = {batch_size, num features}
     if (sigma.shape().first == 0 || sigma.shape().second == 0)
         sigma = Matrix(X.shape().first, X.shape().second, 0, 1, type);
+
+    // std::cout << X.shape().first << " " << X.shape().second << std::endl;
 
     for (int i = 0; i < sigma.shape().first; ++i)
     {

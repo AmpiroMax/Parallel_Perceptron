@@ -2,11 +2,11 @@
 #include <iostream>
 
 Linear::Linear(size_t in, size_t out, bool _bias, AlgorithmType algType)
-    : W(in, out, 0, 1, algType), X(0, 0, 0, 1, algType), bias(0), gradW(0, 0, 0, 1, algType)
+    : W(in, out, 0.5, 1, algType), X(0, 0, 0, 1, algType), bias(0), gradW(0, 0, 0, 1, algType)
 {
     type = algType;
     if (_bias)
-        bias = GString(out, 0);
+        bias = GString(out, 1);
 }
 
 /**
@@ -17,6 +17,7 @@ Linear::Linear(size_t in, size_t out, bool _bias, AlgorithmType algType)
 Matrix Linear::forward(const Matrix &_X)
 {
     X = _X;
+
     if (bias.shape() != 0)
         return X * W + bias;
     else
@@ -31,6 +32,8 @@ Matrix Linear::forward(const Matrix &_X)
 Matrix Linear::backward(const Matrix &grads)
 {
     gradW = X.T() * grads;
+    gradB = grads;
+
     return grads * W.T();
 }
 
@@ -38,4 +41,8 @@ Matrix Linear::backward(const Matrix &grads)
 void Linear::gradienDescend(double lr)
 {
     W = W - lr * gradW;
+    for (int i = 0; i < gradB.shape().first; ++i)
+    {
+        bias = bias - lr * gradB[i];
+    }
 }
