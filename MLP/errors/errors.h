@@ -36,19 +36,4 @@ class MultiprocessingError : public std::exception
     }
 };
 
-
-class AlgorithmTypeError : public std::exception
-/*
- * Ошибка несоответствия алгоритмов
- *
- * Возникает при несоответствии алгоритмов матричного умножения
- * у матриц
- */
-{
-    const char* what() const noexcept override
-    {
-        return "AlgorithmTypeError: operands have different algorithm types;\n";
-    }
-};
-
 #endif //MLP_ERRORS_H

@@ -1,26 +1,24 @@
 #include <iostream>
 
-#include "gstring/GString.h"
+#include "row/Row.h"
 #include "matrix/Matrix.h"
 
 int main()
 {
-    std::vector<std::vector<double>> vector;
+    std::vector<std::vector<double>> v;
 
-    for (size_t i = 0; i < 3; ++i)
+    for (int i = 0; i < 4; ++i)
     {
-        std::vector<double> line;
+        std::vector<double> row;
 
-        for (size_t j = 0; j < 4; ++j)
-            line.push_back(i + j + 1);
+        for (int j = 0; j < 5; ++j)
+            row.push_back(j + i * 5);
 
-        vector.push_back(line);
+        v.push_back(row);
     }
 
-    Matrix mat(vector);
-    GString str({1, 2, 3, 4});
+    Matrix mat(v, 4);
 
     std::cout << mat << '\n';
-
-    std::cout << str + mat << '\n';
+    std::cout << mat * mat.T() << "\n";
 }
