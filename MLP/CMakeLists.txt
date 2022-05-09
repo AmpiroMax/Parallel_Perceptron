@@ -11,7 +11,7 @@ set(SOURCES
     layers/softmax.cpp
     layers/sigmoid.cpp
     matrix/matrix.cpp
-    gstring/GString.cpp)
+        row/Row.cpp)
 
 set(HEADERS
     constants.h
@@ -21,7 +21,7 @@ set(HEADERS
     layers/linear.h
     layers/softmax.h
     layers/sigmoid.h
-    gstring/GString.h
+        row/Row.h
     errors/errors.h)
 
 add_executable(
