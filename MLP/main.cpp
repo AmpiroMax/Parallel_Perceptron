@@ -25,7 +25,7 @@ namespace plt = matplotlibcpp;
 
 int main()
 {
-    Perceptron model(784, 10, 0.0005, 3);
+    Perceptron model(784, 10, 0.0001, 3);
     std::vector<double> loss = trainLoop(model);
     plt::plot(loss);
     plt::show();

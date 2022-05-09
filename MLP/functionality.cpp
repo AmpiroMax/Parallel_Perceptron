@@ -1,4 +1,5 @@
 #include "functionality.h"
+#include <chrono>
 #include <cmath>
 
 void testDataloader()
@@ -37,7 +38,6 @@ void testLayers()
 {
     int in_feat = 2;
     int out_feat = 3;
-    int batch = 5;
 
     Linear l1(in_feat, out_feat);
 
@@ -197,7 +197,7 @@ void normolize(Matrix &images)
 
 std::vector<double> trainLoop(Perceptron &model, AlgorithmType type)
 {
-    int batchSize = 32;
+    int batchSize = 128;
     int epochs = 20;
     std::vector<double> loss;
     CrossEntropy lossFunk(type);
@@ -218,41 +218,53 @@ std::vector<double> trainLoop(Perceptron &model, AlgorithmType type)
     std::vector<std::vector<double>> testLabels = trainLoader.getLabels(batchSize);
     std::cout << "-------Batches are initialized----" << std::endl;
 
-    int limit = 300;
+    int limit = 100;
+
+    auto totalBegin = std::chrono::steady_clock::now();
 
     for (int epoch = 0; epoch < epochs; ++epoch)
     {
-        std::cout << "Epoch #" << epoch << std::endl;
+        std::cout << "Epoch #" << epoch + 1 << "/" << epochs << std::endl;
         double meanLoss = 0.0;
+
+        auto epochBegin = std::chrono::steady_clock::now();
+
         for (int batchNum = 0; (batchNum < trainImages.size() && batchNum < limit); ++batchNum)
         {
+            double currLoss;
+
             Matrix images(trainImages[batchNum], 1, type);
+            Matrix labels(GString(trainLabels[batchNum]), 1, type);
+            Matrix prediction;
             normolize(images);
 
-            GString _labels(trainLabels[batchNum]);
-            Matrix labels(_labels, 1, type); // А надо ли её переводить в матрицу
-                                             // чтоб потом передавть в CrossEntropy или могу
-                                             // строчкой чисто кидать
-            double currLoss;
-            Matrix prediction;
-
-            // std::cout << images.T() << std::endl;
+            // auto begin = std::chrono::steady_clock::now();
 
             prediction = model.predict(images);
             currLoss = lossFunk.forward(prediction, labels);
             Matrix grad = lossFunk.backward();
-
-            if ((batchNum + 1) % 2 == 0)
-                std::cout << "[" << batchNum + 1 << "/" << limit << "] " << currLoss << std::endl;
-            meanLoss += currLoss / limit;
-
             model.backprop(grad);
+
+            // auto end = std::chrono::steady_clock::now();
+            // auto modelWorkTime = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin);
+            // std::cout << modelWorkTime.count() << " ms, ";
+
+            meanLoss += currLoss;
+            if ((batchNum + 1) % 10 == 0)
+                std::cout << "[" << batchNum + 1 << "/" << limit << "] " << meanLoss / (batchNum + 1) << std::endl;
         }
-        if (!loss.empty())
-            if (abs(meanLoss - loss.back()) < 0.0001)
-                break;
-        loss.push_back(meanLoss);
+
+        auto epochEnd = std::chrono::steady_clock::now();
+        auto epochWorkTime = std::chrono::duration_cast<std::chrono::seconds>(epochEnd - epochBegin);
+        std::cout << "Epoch time: " << epochWorkTime.count() << " s" << std::endl;
+
+        loss.push_back(meanLoss / (limit > trainImages.size() ? trainImages.size() : limit));
         std::cout << std::endl;
     }
+
+    auto totalEnd = std::chrono::steady_clock::now();
+    auto epochWorkTime = std::chrono::duration_cast<std::chrono::minutes>(totalEnd - totalBegin);
+    std::cout << "Total time: " << epochWorkTime.count() << " minutes" << std::endl;
+
     return loss;
 }
