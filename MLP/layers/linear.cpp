@@ -1,12 +1,14 @@
 #include "linear.h"
 #include <iostream>
 
-Linear::Linear(size_t in, size_t out, bool _bias, AlgorithmType algType)
-    : W(in, out, 0.5, 1, algType), X(0, 0, 0, 1, algType), bias(0), gradW(0, 0, 0, 1, algType)
+Linear::Linear(size_t in, size_t out, bool _bias, int _nJobs)
+    : W(in, out, _nJobs, FillingType::Randomize),
+      X(0, 0, _nJobs, FillingType::Randomize),
+      bias(0),
+      gradW(0, 0, _nJobs, FillingType::Randomize)
 {
-    type = algType;
     if (_bias)
-        bias = GString(out, 1);
+        bias = Row(out, FillingType::Randomize);
 }
 
 /**

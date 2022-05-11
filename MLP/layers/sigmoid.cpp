@@ -1,9 +1,9 @@
 #include "sigmoid.h"
 #include <cmath>
 
-Sigmoid::Sigmoid(AlgorithmType algType) : sigma(0, 0, 0, 1, algType)
+Sigmoid::Sigmoid(int _nJobs) : sigma(0, 0, _nJobs)
 {
-    type = algType;
+    nJobs = _nJobs;
 }
 
 /**
@@ -16,7 +16,7 @@ Matrix Sigmoid::forward(const Matrix &X)
 {
     /// sigma.shape = {batch_size, num features}
     if (sigma.shape().first == 0 || sigma.shape().second == 0)
-        sigma = Matrix(X.shape().first, X.shape().second, 0, 1, type);
+        sigma = Matrix(X.shape().first, X.shape().second, nJobs);
 
     // std::cout << X.shape().first << " " << X.shape().second << std::endl;
 

@@ -29,7 +29,7 @@ set(SOURCES
     dataloader/dataloader.cpp
 
     matrix/matrix.cpp
-    gstring/GString.cpp
+    row/Row.cpp
 )
 
 set(HEADERS
@@ -37,6 +37,7 @@ set(HEADERS
     layers/linear.h
     layers/softmax.h
     layers/sigmoid.h
+
     layers/crossentropy.h
     perceptron.h
 
@@ -45,7 +46,7 @@ set(HEADERS
 
     constants.h
     errors/errors.h
-    gstring/GString.h
+    row/Row.h
     matrix/Matrix.h
 
     matplotlibcpp.h

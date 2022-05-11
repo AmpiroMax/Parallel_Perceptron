@@ -1,9 +1,9 @@
 #include "softmax.h"
 #include <cmath>
 
-SoftMax::SoftMax(AlgorithmType algType) : SM(0, 0, 0, 1, algType)
+SoftMax::SoftMax(int _nJobs) : SM(0, 0, _nJobs)
 {
-    type = algType;
+    nJobs = _nJobs;
 }
 /**
  * @brief SoftMax::forward
@@ -27,7 +27,7 @@ Matrix SoftMax::forward(const Matrix &X)
     // Результат Softmax сохраняем, т.к. он необходим для подсчёта градиента
     // SM.shape = {batch_size, num classes}
     if (SM.shape().first == 0 || SM.shape().second == 0)
-        SM = Matrix(X.shape().first, X.shape().second, 0, 1, type);
+        SM = Matrix(X.shape().first, X.shape().second, nJobs);
 
     for (int i = 0; i < X.shape().first; ++i)
     {
@@ -45,8 +45,8 @@ Matrix SoftMax::backward(const Matrix &_grads)
     int batchSize = SM.shape().first;
     int n_classes = SM.shape().second;
 
-    Matrix batchGrad(batchSize, n_classes, 0, 1, type);
-    Matrix SoftMGrad(n_classes, n_classes, 0, 1, type);
+    Matrix batchGrad(batchSize, n_classes, nJobs);
+    Matrix SoftMGrad(n_classes, n_classes, nJobs);
 
     // проход по результату SoftMax для каждого
     // элемента батча
@@ -69,7 +69,7 @@ Matrix SoftMax::backward(const Matrix &_grads)
 
         // Значение итогого градиента для к-го элемента батча
         batchGrad[k] = _grads[k] * SoftMGrad;
+        // std::cout << batchGrad[k] << std::endl;
     }
-
     return batchGrad;
 }

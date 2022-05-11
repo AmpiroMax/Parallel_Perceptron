@@ -195,12 +195,12 @@ void normolize(Matrix &images)
     //    }
 }
 
-std::vector<double> trainLoop(Perceptron &model, AlgorithmType type)
+std::vector<double> trainLoop(Perceptron &model, int nJobs)
 {
     int batchSize = 128;
-    int epochs = 20;
+    int epochs = 50;
     std::vector<double> loss;
-    CrossEntropy lossFunk(type);
+    CrossEntropy lossFunk(nJobs);
 
     std::string trainPath = "C:/Max/Progra/Parallel_Perceptron/MNIST_data/MNIST/train";
     std::string testPath = "C:/Max/Progra/Parallel_Perceptron/MNIST_data/MNIST/test";
@@ -233,25 +233,48 @@ std::vector<double> trainLoop(Perceptron &model, AlgorithmType type)
         {
             double currLoss;
 
-            Matrix images(trainImages[batchNum], 1, type);
-            Matrix labels(GString(trainLabels[batchNum]), 1, type);
+            Matrix images(trainImages[batchNum], nJobs);
+            Matrix labels(Row(trainLabels[batchNum]), nJobs);
             Matrix prediction;
             normolize(images);
 
-            // auto begin = std::chrono::steady_clock::now();
+            auto begin = std::chrono::steady_clock::now();
 
             prediction = model.predict(images);
+
             currLoss = lossFunk.forward(prediction, labels);
             Matrix grad = lossFunk.backward();
+
             model.backprop(grad);
 
-            // auto end = std::chrono::steady_clock::now();
-            // auto modelWorkTime = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin);
-            // std::cout << modelWorkTime.count() << " ms, ";
+            auto end = std::chrono::steady_clock::now();
+            auto modelWorkTime = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin);
+            std::cout << modelWorkTime.count() << " ms, ";
 
             meanLoss += currLoss;
             if ((batchNum + 1) % 10 == 0)
                 std::cout << "[" << batchNum + 1 << "/" << limit << "] " << meanLoss / (batchNum + 1) << std::endl;
+
+            if ((batchNum + 1) % 10 == 0)
+            {
+                std::cout << std::endl;
+                for (int i = 0; i < 10; ++i)
+                {
+                    int maxInd = 0;
+                    double max = prediction[i][0];
+                    for (int j = 1; j < prediction.shape().second; ++j)
+                    {
+                        if (prediction[i][j] > max)
+                        {
+                            maxInd = j;
+                            max = prediction[i][j];
+                        }
+                    }
+
+                    std::cout << "Truth: " << labels[0][i] << ", predicted: " << maxInd << std::endl;
+                }
+                std::cout << std::endl;
+            }
         }
 
         auto epochEnd = std::chrono::steady_clock::now();

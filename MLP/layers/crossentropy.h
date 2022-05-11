@@ -8,10 +8,10 @@ class CrossEntropy
   private:
     Matrix truthLabels;
     Matrix predictedLabels;
-    AlgorithmType type;
+    int nJobs;
 
   public:
-    CrossEntropy(AlgorithmType algType = AlgorithmType::Slow);
+    CrossEntropy(int nJobs = 1);
     double forward(const Matrix &predict, const Matrix &truth);
     Matrix backward();
 };

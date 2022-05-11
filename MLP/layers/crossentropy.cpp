@@ -1,10 +1,9 @@
 #include "crossentropy.h"
 #include <cmath>
 
-CrossEntropy::CrossEntropy(AlgorithmType algType)
-    : truthLabels(0, 0, 0, 1, algType), predictedLabels(0, 0, 0, 1, algType)
+CrossEntropy::CrossEntropy(int _nJobs) : truthLabels(0, 0, _nJobs), predictedLabels(0, 0, _nJobs)
 {
-    type = algType;
+    nJobs = _nJobs;
 }
 
 /**
@@ -39,7 +38,7 @@ double CrossEntropy::forward(const Matrix &predict, const Matrix &truth)
  */
 Matrix CrossEntropy::backward()
 {
-    Matrix rezult(predictedLabels.shape().first, predictedLabels.shape().second, 0, 1, type);
+    Matrix rezult(predictedLabels.shape().first, predictedLabels.shape().second, nJobs);
 
     /// dL/dx = (-t1/p1, ..., -tn/pn)
     for (int i = 0; i < rezult.shape().first; ++i)

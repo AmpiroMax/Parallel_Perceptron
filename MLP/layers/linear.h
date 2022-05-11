@@ -9,14 +9,14 @@ class Linear : public Layer
   private:
     Matrix W;
     Matrix X;
-    GString bias;
+    Row bias;
     Matrix gradW;
     Matrix gradB;
 
-    AlgorithmType type;
+    int nJobs;
 
   public:
-    Linear(size_t in, size_t out, bool _bias = true, AlgorithmType algType = AlgorithmType::Slow);
+    Linear(size_t in, size_t out, bool _bias = true, int nJobs = 1);
     Matrix forward(const Matrix &X) override;
     Matrix backward(const Matrix &grads) override;
 

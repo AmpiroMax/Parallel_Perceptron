@@ -8,10 +8,10 @@ class Sigmoid : public Layer
 
   private:
     Matrix sigma;
-    AlgorithmType type;
+    int nJobs;
 
   public:
-    Sigmoid(AlgorithmType algType = AlgorithmType::Slow);
+    Sigmoid(int nJobs = 1);
     virtual Matrix forward(const Matrix &X);
     virtual Matrix backward(const Matrix &grads);
 

@@ -14,11 +14,11 @@ class Perceptron
     std::vector<Linear> layers;
     Sigmoid activation;
     SoftMax softmax;
+    int nJobs;
     double lr;
 
   public:
-    Perceptron(int inFeatures, int numClasses = 10, double learningRate = 1e-5, int layersNum = 3,
-               AlgorithmType type = AlgorithmType::Slow);
+    Perceptron(int inFeatures, int numClasses = 10, double learningRate = 1e-5, int layersNum = 3, int nJobs = 1);
     Matrix predict(const Matrix &data);
     void backprop(const Matrix &grads);
 };

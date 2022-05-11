@@ -19,6 +19,6 @@ void clip(Matrix &images);
 
 void normolize(Matrix &images);
 
-std::vector<double> trainLoop(Perceptron &model, AlgorithmType type = AlgorithmType::Slow);
+std::vector<double> trainLoop(Perceptron &model, int nJobs);
 
 #endif // FUNCTIONALITY_H
